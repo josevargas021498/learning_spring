@@ -9,24 +9,52 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.*;
 
+
 @RestController
 public class ArraysAndLoops {
 
     @GetMapping("/lastThree")
-    public ArrayList<String> lastThree(@RequestParam String x) {
-
-        String[] words = x.split("//s");
+    public ArrayList<String> lastThree (@RequestParam String array){
+        String[] words = array.split("\\s");
         String[] lastThree;
         lastThree = Arrays.copyOfRange(words, words.length -3, words.length);
         ArrayList<String> list = new ArrayList<>();
         for (String w : lastThree) {
             list.add(w);
         }
+
         return list;
+    }
+
+    @GetMapping("/sum")
+    public Integer sum (@RequestParam int[] array){
+        int total = 0;
+        for (int i : array) total += i;
+        return total;
+    }
+
+    @GetMapping("/sumOfLonger")
+    public Integer sumOfLonger (@RequestParam int[] array1, @RequestParam int[] array2){
+        //If both Arrays are the same length, returns the sum of both Arrays.
+
+        if (array1.length > array2.length) {
+            return sum(array1);
+        }
+        else if (array1.length < array2.length) {
+            return sum(array2);
+        }
+        else {
+            return sum(array1) + sum(array2);
+        }
     }
 
     @GetMapping("/Min")
     public ArrayList<Double> Min (@RequestParam String x) {
+        // Returns the difference between each cost and the minimum cost.
+        // For example, if our options were [1, 3, 3, 2, 5].
+        // The minimum cost would be 1, and the differences from that;
+        // minimum would be [0, 2, 2, 1, 4]
+
         String[] List = x.split("\\s");
         ArrayList<Double> num_list = new ArrayList<>();
         for(String num : List) {
@@ -39,70 +67,38 @@ public class ArraysAndLoops {
         } return  new_list;
     }
 
-    @GetMapping("/sumOfLonger")
-    public int sumOfLonger(@RequestParam String l1, @RequestParam String l2) {
-
-        int sum = 0;
-        
-        if (l1.length() > l2.length()) {
-            sum = IntStream.of(l1).sum();
-        } else if (l1.length() < l2.length()) {
-            sum = IntStream.of(l2).sum();
-        }
-        return sum;
-    }
-
-
-
     @GetMapping("/hashtags")
-    public String[] hashtags(@RequestParam String tweet) {
-
-        String[] comment = tweet.split(" ");
-
-        String[] hashtagsarray;
-
-        for (String i : comment) {
-
-                if (i.startsWith("#")) {
-                    hashtagsarray = add(hashtagsarray, i);
-                }
-            } return hashtagsarray;
+    public ArrayList<String> hashtags (@RequestParam String tweet) {
+        ArrayList<String> tags = new ArrayList<>();
+        String[] words = tweet.split("\\s");
+        for (String i : words) {
+            if (i.contains("#")) {
+                tags.add(i);
+            }
+        }
+        return tags;
     }
-
 
     @GetMapping("/mentions")
-    public String[] mentions(@RequestParam String tweet) {
-        String[] at;
-
-        String[] words = tweet.split(" ");
-
+    public ArrayList<String> mentions (@RequestParam String tweet) {
+        ArrayList<String> tags = new ArrayList<>();
+        String[] words = tweet.split("\\s");
         for (String i : words) {
-            if (i.startsWith("@")) {
-                at = add(at, i);
+            if (i.contains("@")) {
+                tags.add(i);
             }
-        } return at;
+        }
+        return tags;
     }
-//
-//    // String -> Item
-//// Return an inventory item encoded in the provided string.
-//// An Item is a array of 3 elements:
-////     - name
-////     - price we paid
-////     - price we're charging
-//// The provided string seperates each of these pieces with a tab.
-//    function parseInventoryString(s) {
-//        var string = s.split('\t');
-//        var item = [string[0], Number(string[1]), Number(string[2])];
-//        return item;
-//    }
 
-    @GetMapping("/parseinv")
-    public String[] parseinventory(@RequestParam String s) {
-
-        String[] str = s.split("/t");
-        String[] item = [str[0], Integer(str[1]), Integer(str[2])];
-
-        return item;
+    @GetMapping("/parseInventorySpring")
+    public ArrayList<String> parseInventorySpring (@RequestParam String Item) {
+        String[] words = Item.split("\\t");
+        ArrayList<String> result = new ArrayList<>();
+        for(String i : words){
+            result.add(i);
+        }
+        return result;
     }
 
 }
